@@ -378,6 +378,33 @@
         }
         getAndDisplayMessages();
       });
+
+      // Add an event listener for the "Send Message" button
+$("#send-message").click(function () {
+  var message = $("#message").val();
+  var username = $("#username").val();
+  var room_id = $("#room_id").val();
+
+  $.ajax({
+    type: "POST",
+    url: "/sendMessage", // Replace with the URL for sending messages
+    data: {
+      username: username,
+      room_id: room_id,
+      message: message,
+      csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+    },
+    success: function () {
+      displayUserMessage(username, message, getCurrentTime());
+    },
+    error: function (response) {
+      alert("An error occurred");
+    },
+  });
+  $("#message").val(""); // Clear the message input field
+});
+
+
     </script>
 
     <div class="containerr">
@@ -397,6 +424,7 @@
         />
         <input type="text" name="message" id="message" width="100px" />
         <input type="submit" value="Ask ChatGPT" />
+        <input type="button" value="Send Message" id="send-message" />
       </form>
     </div>
   </body>
