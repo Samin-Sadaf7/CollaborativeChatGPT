@@ -9,4 +9,5 @@ urlpatterns = [
     path('getMessages/<str:room>/', views.getMessages, name='getMessages'),
     path('getResponse', views.getResponse, name='getResponse'),
     path('reportError', views.reportError, name='reportError'),
+    path('save_message/', views.save_message, name='save_message'),
 ]

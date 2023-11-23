@@ -1,9 +1,8 @@
 import openai
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-from .models import ErrorReport, Message, Room
-
-
+from .models import ErrorReport, Message, Room, UnResponsedUserMessage
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
@@ -47,7 +46,7 @@ def getResponse(request):
     message = request.POST['message']
     username = request.POST['username']
     room_id = request.POST['room_id']
-    openai.api_key = "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"
+    openai.api_key = "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"
     # Call the ChatGPT API to generate a response
     response = openai.Completion.create(
         engine="text-davinci-002",  # Specify the ChatGPT engine
@@ -86,3 +85,21 @@ def reportError(request):
             return JsonResponse({'message': 'Error report data incomplete'}, status=400)
     else:
         return JsonResponse({'message': 'Invalid request method'}, status=405)
+
+
+@csrf_exempt
+def save_message(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        room_id = request.POST.get('room_id')
+        message = request.POST.get('message')
+
+        new_message = UnResponsedUserMessage.objects.create(
+            username=username,
+            room_id=room_id,
+            message=message
+        )
+        new_message.save()
+        return JsonResponse({'status': 'Message saved successfully'})
+    else:
+        return JsonResponse({'status': 'Failed to save message'})

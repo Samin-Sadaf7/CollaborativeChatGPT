@@ -17,3 +17,12 @@ class ErrorReport(models.Model):
     error_type = models.CharField(max_length=100)
     main_reply = models.CharField(max_length=1000000, default=" ")
     user_remarks = models.CharField(max_length=1000000)
+
+class UnResponsedUserMessage(models.Model):
+    username = models.CharField(max_length=100)
+    room_id = models.IntegerField()
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.username} - {self.timestamp}'

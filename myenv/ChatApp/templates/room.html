@@ -17,7 +17,6 @@
       }
 
       .container {
-        
         background-color: #c3c3c3;
         border-radius: 5px 40px 40px 5px;
         padding-top: 15px;
@@ -117,13 +116,12 @@
         margin: 0;
         border-radius: 10px 10px 0 0;
       }
-      
+
       input[type="submit"]:hover {
         background-color: #114361;
       }
 
       div {
-        
         background-color: #fff;
         padding: 20px;
       }
@@ -192,6 +190,40 @@
           return hours + ":" + (minutes < 10 ? "0" : "") + minutes;
         }
 
+        // Update the handleSendMessage function
+        function handleSendMessage() {
+          var message = $("#message").val();
+          var username = $("#username").val();
+          var room_id = $("#room_id").val();
+
+          // AJAX request to save the message
+          $.ajax({
+            type: "POST",
+            url: "/save_message/",
+            data: {
+              username: username,
+              room_id: room_id,
+              message: message,
+              csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+            },
+            success: function (response) {
+              console.log(response);
+              // Handle success as needed
+            },
+            error: function (response) {
+              console.error("Error occurred while saving message");
+              // Handle error as needed
+            },
+          });
+
+          displayUserMessage(username, message, getCurrentTime());
+          $("#message").val(""); // Clear the message input field
+        }
+
+        // Add an event listener for the "Send Message" button
+        $(document).on("click", "#send-message", function () {
+          handleSendMessage();
+        });
         // Function to display user message
         function displayUserMessage(user, value, date) {
           var temp =
@@ -378,33 +410,6 @@
         }
         getAndDisplayMessages();
       });
-
-      // Add an event listener for the "Send Message" button
-$("#send-message").click(function () {
-  var message = $("#message").val();
-  var username = $("#username").val();
-  var room_id = $("#room_id").val();
-
-  $.ajax({
-    type: "POST",
-    url: "/sendMessage", // Replace with the URL for sending messages
-    data: {
-      username: username,
-      room_id: room_id,
-      message: message,
-      csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
-    },
-    success: function () {
-      displayUserMessage(username, message, getCurrentTime());
-    },
-    error: function (response) {
-      alert("An error occurred");
-    },
-  });
-  $("#message").val(""); // Clear the message input field
-});
-
-
     </script>
 
     <div class="containerr">
